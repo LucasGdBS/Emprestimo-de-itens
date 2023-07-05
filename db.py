@@ -1,7 +1,7 @@
 import sqlite3
 
 class DB:
-    def __init__(self):
+    def connect(self):
         self.con = sqlite3.connect('mysql.db')
         self.cur = self.con.cursor()
 
@@ -105,15 +105,3 @@ class DB:
         return self.cur.execute(
             '''select * from Estoque'''
         ).fetchall()
-    
-    
-    
-
-banco = DB()
-# banco.create_table()
-# banco.insert_item(('arduino', 10, 10, 0))
-# banco.emprestar('arduino')
-# print(banco.consulting_item_by_name('arduino'))
-# banco.delete_item('arduino')
-# print(banco.get_items())
-# banco.con.close()
