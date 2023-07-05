@@ -71,6 +71,22 @@ class DB:
             self.con.commit()
             print('Successfully change item\n')
     
+    def devolver(self, name):
+        try:
+            self.cur.execute(
+                '''update Estoque set
+                qnt_estoque = qnt_estoque + 1, 
+                qnt_emprestados = qnt_emprestados - 1 
+                where item=?''', (name,)
+            )
+        except Exception as erro:
+            print('Failed to change item\n')
+            print(f'Reversing operation (rollbakc): {erro}\n')
+            self.con.rollback()
+        else:
+            self.con.commit()
+            print('Successfully change item\n')
+    
 
     def delete_item(self, name):
         try:
@@ -85,13 +101,19 @@ class DB:
             self.con.commit()
             print('Successfully delete item\n')
     
+    def get_items(self):
+        return self.cur.execute(
+            '''select * from Estoque'''
+        ).fetchall()
+    
     
     
 
 banco = DB()
 # banco.create_table()
-# banco.insert_items(('arduino', 10, 10, 0))
+# banco.insert_item(('arduino', 10, 10, 0))
 # banco.emprestar('arduino')
 # print(banco.consulting_item_by_name('arduino'))
 # banco.delete_item('arduino')
+# print(banco.get_items())
 # banco.con.close()
