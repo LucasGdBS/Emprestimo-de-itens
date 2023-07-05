@@ -63,6 +63,11 @@ class DB:
                 qnt_emprestados = qnt_emprestados + 1 
                 where item=?''', (name,)
             )
+            item = self.consulting_item_by_name(name)
+            if item[1] < abs(item[2]) + abs(item[3]):
+                print('Failed to change item\n')
+                print(f'Reversing operation (rollbakc)\n')
+                return self.con.rollback()
         except Exception as erro:
             print('Failed to change item\n')
             print(f'Reversing operation (rollbakc): {erro}\n')
@@ -79,6 +84,11 @@ class DB:
                 qnt_emprestados = qnt_emprestados - 1 
                 where item=?''', (name,)
             )
+            item = self.consulting_item_by_name(name)
+            if item[1] < abs(item[2]) + abs(item[3]):
+                print('Failed to change item\n')
+                print(f'Reversing operation (rollbakc)\n')
+                return self.con.rollback()
         except Exception as erro:
             print('Failed to change item\n')
             print(f'Reversing operation (rollbakc): {erro}\n')
