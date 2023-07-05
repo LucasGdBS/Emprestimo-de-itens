@@ -1,3 +1,5 @@
+'''Api que da acesso ao banco de dados onde se encontrarm os itens para
+emprestimo'''
 from db import DB
 from fastapi import FastAPI
 
@@ -17,10 +19,12 @@ app = FastAPI()
 
 @app.get('/')
 def teste():
+    ''''Teste inicial. Se retornar 200 você está conectado'''
     return {'codigo': 200}
 
 @app.get('/estoque/get-item')
 def get_items():
+    '''Retorna todos os itens'''
     try:
         estoque.connect()
         items = estoque.get_items()
@@ -32,6 +36,7 @@ def get_items():
     
 @app.get('/estoque/get-item/{nome_item}')
 def get_item(nome_item: str):
+    '''Retorna o item especificado'''
     try:
         estoque.connect()
         item = estoque.consulting_item_by_name(nome_item)
@@ -49,6 +54,7 @@ def get_item(nome_item: str):
 
 @app.post('/estoque/post-item')
 def insert_item(nome_item:str, qnt_total:int, qnt_estoque:int, qnt_emprestados:int):
+    '''Adiciona um novo item ao banco'''
     try:
         estoque.connect()
         estoque.insert_item((nome_item, qnt_total, qnt_estoque, qnt_emprestados))
@@ -61,6 +67,8 @@ def insert_item(nome_item:str, qnt_total:int, qnt_estoque:int, qnt_emprestados:i
 
 @app.put('/estoque/emprestar')
 def emprestar_item(nome_item:str):
+    '''Empresta um item, diminuindo a quantidade de itens em estoque e aumentando
+    os itens emprestados'''
     try:
         estoque.connect()
         estoque.emprestar(nome_item)
@@ -73,6 +81,8 @@ def emprestar_item(nome_item:str):
 
 @app.put('/estoque/devolver')
 def devolver_item(nome_item:str):
+    '''Devolve um item emprestado, diminutindo os itens emprestaodos e aumentando
+    os itens em estoque'''
     try:
         estoque.connect()
         estoque.devolver(nome_item)
