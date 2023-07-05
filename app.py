@@ -46,11 +46,36 @@ def get_item(nome_item: str):
     except:
         return {'Erro':'item não encontrado'}
 
-@app.post('/estoque/post-item/')
+
+@app.post('/estoque/post-item')
 def insert_item(nome_item:str, qnt_total:int, qnt_estoque:int, qnt_emprestados:int):
     try:
         estoque.connect()
         estoque.insert_item((nome_item, qnt_total, qnt_estoque, qnt_emprestados))
+        estoque.con.close()
+    except:
+        return {'Erro':'nao foi possivel realizar'}
+    else:
+        return get_item(nome_item)
+
+
+@app.put('/estoque/emprestar')
+def emprestar_item(nome_item:str):
+    try:
+        estoque.connect()
+        estoque.emprestar(nome_item)
+        estoque.con.close()
+    except:
+        return {'Erro':'nao foi possivel realizar'}
+    else:
+        return get_item(nome_item)
+
+
+@app.put('/estoque/devolver')
+def devolver_item(nome_item:str):
+    try:
+        estoque.connect()
+        estoque.devolver(nome_item)
         estoque.con.close()
     except:
         return {'Erro':'nao foi possivel realizar'}
