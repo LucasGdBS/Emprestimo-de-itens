@@ -18,10 +18,7 @@ async def veritem(ctx, *entrada):
     >get_item [nome_do_item]
     '''
 
-    item = ''
-    for palavra in entrada:
-        item += f'{palavra} '
-    item = item.rstrip()
+    item = ' '.join(entrada)
 
     response = requests.get(url=f'{path}/get-item/{item}').json()
     string = f'{item} no GARAGino'
@@ -38,10 +35,7 @@ async def emprestar(ctx, *entrada):
     >emprestar [nome_do_item]
     '''
 
-    item = ''
-    for palavra in entrada:
-        item += f'{palavra} '
-    item = item.rstrip()
+    item = ' '.join(entrada)
 
     response = requests.put(url=f'{path}/emprestar?nome_item={item}')
     if 'Erro' not in response.json():
@@ -56,10 +50,7 @@ async def devolver(ctx, *entrada):
     >devolver [nome_do_item]
     '''
 
-    item = ''
-    for palavra in entrada:
-        item += f'{palavra} '
-    item = item.rstrip()
+    item = ' '.join(entrada)
 
     response = requests.put(url=f'{path}/devolver?nome_item={item}')
     if 'Erro' not in response.json():
