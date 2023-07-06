@@ -12,11 +12,17 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='>', intents=intents)
 
 @bot.command()
-async def get_item(ctx, item):
+async def veritem(ctx, *entrada):
     '''
     Exibe informações do item escolhido 
     >get_item [nome_do_item]
     '''
+    
+    item = ''
+    for a in entrada:
+        item += f'{a} '
+    item = item.rstrip()
+
     response = requests.get(url=f'{path}/get-item/{item}').json()
     string = f'{item} no GARAGino'
 
