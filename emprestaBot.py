@@ -17,10 +17,10 @@ async def veritem(ctx, *entrada):
     Exibe informações do item escolhido 
     >get_item [nome_do_item]
     '''
-    
+
     item = ''
-    for a in entrada:
-        item += f'{a} '
+    for palavra in entrada:
+        item += f'{palavra} '
     item = item.rstrip()
 
     response = requests.get(url=f'{path}/get-item/{item}').json()
@@ -32,11 +32,17 @@ async def veritem(ctx, *entrada):
     await ctx.send(string)
 
 @bot.command()
-async def emprestar(ctx, item):
+async def emprestar(ctx, *entrada):
     '''
     Pega um item emprestado, tirando-o do estoque
     >emprestar [nome_do_item]
     '''
+
+    item = ''
+    for palavra in entrada:
+        item += f'{palavra} '
+    item = item.rstrip()
+
     response = requests.put(url=f'{path}/emprestar?nome_item={item}')
     if 'Erro' not in response.json():
         await ctx.send(f'{item} emprestado! Não esqueça de pega-lo!')
@@ -44,11 +50,17 @@ async def emprestar(ctx, item):
         await ctx.send(f'Não temos {item} no estoque para emprestar :(')
 
 @bot.command()
-async def devolver(ctx, item):
+async def devolver(ctx, *entrada):
     '''
     Devolve um item que foi pego, colocando-o no estoque
     >devolver [nome_do_item]
     '''
+
+    item = ''
+    for palavra in entrada:
+        item += f'{palavra} '
+    item = item.rstrip()
+
     response = requests.put(url=f'{path}/devolver?nome_item={item}')
     if 'Erro' not in response.json():
         await ctx.send(f'{item} Devolvido! Não esqueça de entrega-lo!')
