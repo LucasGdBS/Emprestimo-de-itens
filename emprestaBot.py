@@ -1,4 +1,5 @@
 from os import linesep
+import json
 import discord
 import requests
 from discord.ext import commands
@@ -31,10 +32,10 @@ async def emprestar(ctx, item):
     >emprestar [nome_do_item]
     '''
     response = requests.put(url=f'{path}/emprestar?nome_item={item}')
-    if 'Erro' not in response:
+    if 'Erro' not in response.json():
         await ctx.send(f'{item} emprestado! Não esqueça de pega-lo!')
     else:
-        await ctx.send(f'Não temos {item} no estoque para emprestar :()')
+        await ctx.send(f'Não temos {item} no estoque para emprestar :(')
 
 @bot.command()
 async def devolver(ctx, item):
@@ -43,9 +44,9 @@ async def devolver(ctx, item):
     >devolver [nome_do_item]
     '''
     response = requests.put(url=f'{path}/devolver?nome_item={item}')
-    if 'Erro' not in response:
+    if 'Erro' not in response.json():
         await ctx.send(f'{item} Devolvido! Não esqueça de entrega-lo!')
     else:
-        await ctx.send(f'Algo deu errado... não consegui devolver :()')
+        await ctx.send(f'Algo deu errado... não consegui devolver :(')
 
 bot.run(key)
