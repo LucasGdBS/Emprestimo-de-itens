@@ -1,3 +1,4 @@
+from os import linesep
 import json
 import discord
 import requests
@@ -17,10 +18,12 @@ async def ping(ctx):
 @bot.command()
 async def get_item(ctx, item):
     response = requests.get(url=f'{path}/get-item/{item}').json()
+    string = f'{item} no GARAGino'
 
-    await ctx.send(f'{item} no GARAGino')
+    
     for k,v in response.items():
-        await ctx.send(f'{k}: {v}')
+        string += f'{linesep}{k}: {v}'
+    await ctx.send(string)
 
 @bot.command()
 async def emprestar(ctx, item):
