@@ -17,9 +17,9 @@ class DB:
                              )
                              ''')
         except Exception as erro:
-            print(f'Failed to create table: {erro}')
+            return {'Erro': erro}
         else:
-            print(f'Table created successfully!\n')
+            return {'Sucesso':'OK'}
     
 
     def insert_item(self, item:tuple):
@@ -28,12 +28,11 @@ class DB:
                 '''insert into Estoque values (?, ?, ?, ?)''', item
                 )
         except Exception as erro:
-            print('\nFailed to insert item')
-            print(f'Reversing operation (rollback): {erro}\n')
             self.con.rollback()
+            return {'Erro': erro}
         else:
             self.con.commit()
-            print('Successfully added item')
+            return {'Sucesso':'OK'}
     
 
     def insert_items(self, items):
@@ -42,12 +41,11 @@ class DB:
                 '''insert into Estoque values (?, ?, ?, ?)''', items
             )
         except Exception as erro:
-            print('\nFailed to insert item')
-            print(f'Reversing operation (rollback): {erro}\n')
             self.con.rollback()
+            return {'Erro': erro}
         else:
             self.con.commit()
-            print('Successfully added item')
+            return {'Sucesso':'OK'}
 
 
     def consulting_item_by_name(self, name):
@@ -65,17 +63,14 @@ class DB:
             )
             item = self.consulting_item_by_name(name)
             if item[1] < abs(item[2]) + abs(item[3]):
-                print('Failed to change item\n')
-                print(f'Reversing operation (rollback)\n')
                 self.con.rollback()
-                return
+                return {'Erro': 'No find itens'}
         except Exception as erro:
-            print('Failed to change item\n')
-            print(f'Reversing operation (rollback): {erro}\n')
             self.con.rollback()
+            return {'Erro': erro}
         else:
             self.con.commit()
-            print('Successfully change item\n')
+            return {'Sucesso':'OK'}
     
     def devolver(self, name):
         try:
@@ -87,16 +82,14 @@ class DB:
             )
             item = self.consulting_item_by_name(name)
             if item[1] < abs(item[2]) + abs(item[3]):
-                print('Failed to change item\n')
-                print(f'Reversing operation (rollbakc)\n')
-                return self.con.rollback()
+                self.con.rollback()
+                return {'Erro': 'No find itens'}
         except Exception as erro:
-            print('Failed to change item\n')
-            print(f'Reversing operation (rollbakc): {erro}\n')
             self.con.rollback()
+            return {'Erro': erro}
         else:
             self.con.commit()
-            print('Successfully change item\n')
+            return {'Sucesso':'OK'}
     
 
     def delete_item(self, name):
@@ -105,12 +98,11 @@ class DB:
                 '''delete from Estoque where item=?''', (name,)
             )
         except Exception as erro:
-            print('Failed to delete item\n')
-            print(f'Reversing operation (rollbakc): {erro}\n')
             self.con.rollback()
+            return {'Erro': erro}
         else:
             self.con.commit()
-            print('Successfully delete item\n')
+            return {'Sucesso':'OK'}
     
     def get_items(self):
         return self.cur.execute(
