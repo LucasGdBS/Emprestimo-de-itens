@@ -29,7 +29,7 @@ class DB:
                 )
         except Exception as erro:
             print('\nFailed to insert item')
-            print(f'Reversing operation (rollbakc): {erro}\n')
+            print(f'Reversing operation (rollback): {erro}\n')
             self.con.rollback()
         else:
             self.con.commit()
@@ -43,7 +43,7 @@ class DB:
             )
         except Exception as erro:
             print('\nFailed to insert item')
-            print(f'Reversing operation (rollbakc): {erro}\n')
+            print(f'Reversing operation (rollback): {erro}\n')
             self.con.rollback()
         else:
             self.con.commit()
@@ -66,11 +66,12 @@ class DB:
             item = self.consulting_item_by_name(name)
             if item[1] < abs(item[2]) + abs(item[3]):
                 print('Failed to change item\n')
-                print(f'Reversing operation (rollbakc)\n')
-                return self.con.rollback()
+                print(f'Reversing operation (rollback)\n')
+                self.con.rollback()
+                return
         except Exception as erro:
             print('Failed to change item\n')
-            print(f'Reversing operation (rollbakc): {erro}\n')
+            print(f'Reversing operation (rollback): {erro}\n')
             self.con.rollback()
         else:
             self.con.commit()
