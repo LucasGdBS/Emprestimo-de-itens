@@ -69,25 +69,27 @@ def insert_item(nome_item:str, qnt_total:int, qnt_estoque:int, qnt_emprestados:i
 def emprestar_item(nome_item:str):
     '''Empresta um item, diminuindo a quantidade de itens em estoque e aumentando
     os itens emprestados'''
-    try:
-        estoque.connect()
-        estoque.emprestar(nome_item)
-        estoque.con.close()
-    except:
-        return {'Erro':'nao foi possivel realizar'}
-    else:
+    
+    estoque.connect()
+    emprestimo = estoque.emprestar(nome_item)
+    estoque.con.close()
+    
+    if 'Erro' not in emprestimo :
         return get_item(nome_item)
+    else:
+        return emprestimo
 
 
 @app.put('/estoque/devolver')
 def devolver_item(nome_item:str):
     '''Devolve um item emprestado, diminutindo os itens emprestaodos e aumentando
     os itens em estoque'''
-    try:
-        estoque.connect()
-        estoque.devolver(nome_item)
-        estoque.con.close()
-    except:
-        return {'Erro':'nao foi possivel realizar'}
-    else:
+    
+    estoque.connect()
+    devolucao = estoque.devolver(nome_item)
+    estoque.con.close()
+
+    if 'Erro' not in devolucao:
         return get_item(nome_item)
+    else:
+        return devolucao
