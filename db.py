@@ -6,7 +6,7 @@ class DB:
         self.cur = self.con.cursor()
 
 
-    def create_table(self):
+    def create_table_estoque(self):
         try:
             self.cur.execute(f'''
                              create table if not exists Estoque (
@@ -15,6 +15,23 @@ class DB:
                              qnt_estoque integer,
                              qnt_emprestados integer,
                              qnt_quebrados integer
+                             )
+                             ''')
+        except Exception as erro:
+            return {'Erro': erro}
+        else:
+            return {'Sucesso':'OK'}
+
+
+    def create_table_user(self):
+        try:
+            self.cur.execute(f'''
+                             create table if not exists User (
+                             id integer primary key autoincrement,
+                             nome text,
+                             email text,
+                             item text,
+                             situacao boolean check (situacao in (0, 1))
                              )
                              ''')
         except Exception as erro:
@@ -47,6 +64,11 @@ class DB:
         else:
             self.con.commit()
             return {'Sucesso':'OK'}
+    
+    def insert_user(self, nome, email, item):
+        self.cur.execute(
+            '''insert into User (nome, email, item, situacao) values (?, ?, ?, ?)''', (nome, email, item, 1)
+        )
 
 
     def consulting_item_by_name(self, name):
@@ -54,18 +76,29 @@ class DB:
             '''select * from Estoque where item=?''', (name,)
         ).fetchone()
     
-    def emprestar(self, name):
+    def consulting_user(self, nome, email, item):
+        user = self.cur.execute(
+            '''select * from User where nome=? and email=? and item=? and situacao=?''',(nome, email, item, 1)
+        ).fetchone()
+
+        return user
+    
+    def emprestar(self, item, nome, email):
         try:
             self.cur.execute(
                 '''update Estoque set
                 qnt_estoque = qnt_estoque - 1, 
                 qnt_emprestados = qnt_emprestados + 1 
-                where item=?''', (name,)
+                where item=?''', (item,)
             )
-            item = self.consulting_item_by_name(name)
-            if item[1] < abs(item[2]) + abs(item[3]) + abs(item[4]):
+            items = self.consulting_item_by_name(item)
+            if items[1] < abs(items[2]) + abs(items[3]) + abs(items[4]):
                 self.con.rollback()
                 return {'Erro': 'No find itens'}
+            
+            self.insert_user(nome, email, item)
+            
+
         except Exception as erro:
             self.con.rollback()
             return {'Erro': erro}
@@ -73,18 +106,29 @@ class DB:
             self.con.commit()
             return {'Sucesso':'OK'}
     
-    def devolver(self, name):
+    def devolver(self, item, nome, email):
         try:
             self.cur.execute(
                 '''update Estoque set
                 qnt_estoque = qnt_estoque + 1, 
                 qnt_emprestados = qnt_emprestados - 1 
-                where item=?''', (name,)
+                where item=?''', (item,)
             )
-            item = self.consulting_item_by_name(name)
-            if item[1] < abs(item[2]) + abs(item[3]) + abs(item[4]):
+            items = self.consulting_item_by_name(item)
+            if items[1] < abs(items[2]) + abs(items[3]) + abs(items[4]):
                 self.con.rollback()
                 return {'Erro': 'No find itens'}
+            
+            if self.consulting_user(nome, email, item):
+                self.cur.execute(
+                    '''update User set
+                    situacao = 0
+                    where nome = ? and email = ? and item=?''', (nome, email, item)
+                )
+            else:
+                self.con.rollback()
+                return {'Erro': 'No find itens'}
+
         except Exception as erro:
             self.con.rollback()
             return {'Erro': erro}
@@ -145,3 +189,13 @@ class DB:
         else:
             self.con.commit()
             return {'Sucesso': 'OK'}
+
+a = DB()
+a.connect()
+# print(a.create_table_user())
+# print(a.emprestar('arduino', 'gabriel', 'lgbs@cesar.school'))
+# print(a.insert_user('lucas', 'lgbs@cesar.school', 'arduino'))
+print(a.devolver('arduino', 'gabriel', 'lgbs@cesar.school'))
+# m = a.consulting_user('gabriel', 'lgbs@cesar.school', 'arduino')
+# print(m)
+a.con.close()
