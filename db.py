@@ -128,3 +128,20 @@ class DB:
         else:
             self.con.commit()
             return {'Sucesso': 'OK'}
+    
+    def modify_item(self, item, qnt_total, qnt_estoque, qnt_emprestados=0, qnt_quebrados=0):
+        try:
+            self.cur.execute(
+                '''update Estoque set
+                qnt_total=?,
+                qnt_estoque=?,
+                qnt_emprestados=?,
+                qnt_quebrados=?
+                where item=?''',  (qnt_total, qnt_estoque, qnt_emprestados, qnt_quebrados, item)
+            )
+        except Exception as erro:
+            self.con.rollback()
+            return {'Erro': erro}
+        else:
+            self.con.commit()
+            return {'Sucesso': 'OK'}
