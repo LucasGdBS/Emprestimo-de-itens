@@ -189,13 +189,3 @@ class DB:
         else:
             self.con.commit()
             return {'Sucesso': 'OK'}
-
-a = DB()
-a.connect()
-# print(a.create_table_user())
-# print(a.emprestar('arduino', 'gabriel', 'lgbs@cesar.school'))
-# print(a.insert_user('lucas', 'lgbs@cesar.school', 'arduino'))
-print(a.devolver('arduino', 'gabriel', 'lgbs@cesar.school'))
-# m = a.consulting_user('gabriel', 'lgbs@cesar.school', 'arduino')
-# print(m)
-a.con.close()

@@ -67,12 +67,12 @@ def insert_item(nome_item:str, qnt_total:int, qnt_estoque:int, qnt_emprestados:i
 
 
 @app.put('/estoque/emprestar')
-def emprestar_item(nome_item:str):
+def emprestar_item(nome_item:str, user:str, email:str):
     '''Empresta um item, diminuindo a quantidade de itens em estoque e aumentando
     os itens emprestados'''
     
     estoque.connect()
-    emprestimo = estoque.emprestar(nome_item)
+    emprestimo = estoque.emprestar(nome_item, user, email)
     estoque.con.close()
     
     if 'Erro' not in emprestimo :
@@ -82,12 +82,12 @@ def emprestar_item(nome_item:str):
 
 
 @app.put('/estoque/devolver')
-def devolver_item(nome_item:str):
+def devolver_item(nome_item:str, user:str, email:str):
     '''Devolve um item emprestado, diminutindo os itens emprestaodos e aumentando
     os itens em estoque'''
     
     estoque.connect()
-    devolucao = estoque.devolver(nome_item)
+    devolucao = estoque.devolver(nome_item, user, email)
     estoque.con.close()
 
     if 'Erro' not in devolucao:
