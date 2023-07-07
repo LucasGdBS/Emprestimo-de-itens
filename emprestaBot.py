@@ -20,12 +20,13 @@ async def veritem(ctx, *entrada):
 
     item = ' '.join(entrada)
 
-    response = requests.get(url=f'{path}/get-item/{item}').json()
+    response = requests.get(url=f'{path}/get-item?nome_item={item}').json()
     string = f'{item} no GARAGino'
 
     
     for k,v in response.items():
-        string += f'{linesep}{k}: {v}'
+        if not k == 'qnt_quebrados':
+            string += f'{linesep}{k}: {v}'
     await ctx.send(string)
 
 @bot.command()
