@@ -129,7 +129,7 @@ class DB:
             self.con.commit()
             return {'Sucesso': 'OK'}
     
-    def modify_item(self, item, qnt_total, qnt_estoque, qnt_emprestados=0, qnt_quebrados=0):
+    def modify_item(self, item, qnt_total, qnt_estoque, qnt_emprestados, qnt_quebrados):
         try:
             self.cur.execute(
                 '''update Estoque set

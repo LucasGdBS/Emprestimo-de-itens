@@ -22,7 +22,7 @@ def teste():
     ''''Teste inicial. Se retornar 200 você está conectado'''
     return {'codigo': 200}
 
-@app.get('/estoque/get-items')
+@app.get('/estoque')
 def get_items():
     '''Retorna todos os itens'''
     try:
@@ -94,3 +94,16 @@ def devolver_item(nome_item:str):
         return get_item(nome_item)
     else:
         return devolucao
+
+@app.put('/estoque/modify')
+def modify_item(nome_item:str, qnt_total:int, qnt_estoque:int, qnt_emprestados:int, qnt_quebrados:int):
+    '''Modifica as quantidade de um item por completo'''
+
+    estoque.connect()
+    modify = estoque.modify_item(nome_item, qnt_total, qnt_estoque, qnt_emprestados, qnt_quebrados)
+    estoque.con.close()
+
+    if 'Erro' not in modify:
+        return get_item(nome_item)
+    else: 
+        return modify
