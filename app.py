@@ -22,7 +22,7 @@ def teste():
     ''''Teste inicial. Se retornar 200 você está conectado'''
     return {'codigo': 200}
 
-@app.get('/estoque/get-item')
+@app.get('/estoque/get-items')
 def get_items():
     '''Retorna todos os itens'''
     try:
@@ -34,7 +34,7 @@ def get_items():
     else:
         return [{'item':row[0],'qnt_total':row[1],'qnt_estoque':row[2],'qnt_emprestados':row[3], 'qnt_quebrados':row[4]} for row in items]
     
-@app.get('/estoque/get-item/{nome_item}')
+@app.get('/estoque/get-item')
 def get_item(nome_item: str):
     '''Retorna o item especificado'''
     try:
