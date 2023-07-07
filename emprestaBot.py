@@ -30,32 +30,42 @@ async def veritem(ctx, *entrada):
     await ctx.send(string)
 
 @bot.command()
-async def emprestar(ctx, *entrada):
+async def emprestar(ctx, *item):
     '''
     Pega um item emprestado, tirando-o do estoque
     >emprestar [nome_do_item]
     '''
 
-    item = ' '.join(entrada)
+    item = ' '.join(item)
+    item = item.split(';')
 
-    response = requests.put(url=f'{path}/emprestar?nome_item={item}')
+    nome = ctx.author.nick
+    if nome is None:
+        nome = ctx.author.name
+
+    response = requests.put(url=f'{path}/emprestar?nome_item={item[0]}&user={nome}&email={item[1]}')
     if 'Erro' not in response.json():
-        await ctx.send(f'{item} emprestado! Não esqueça de pega-lo!')
+        await ctx.send(f'{item[0]} emprestado! Não esqueça de pega-lo!')
     else:
         await ctx.send(f'Não temos {item} no estoque para emprestar :(')
 
 @bot.command()
-async def devolver(ctx, *entrada):
+async def devolver(ctx, *item):
     '''
     Devolve um item que foi pego, colocando-o no estoque
     >devolver [nome_do_item]
     '''
 
-    item = ' '.join(entrada)
+    item = ' '.join(item)
+    item = item.split(';')
 
-    response = requests.put(url=f'{path}/devolver?nome_item={item}')
+    nome = ctx.author.nick
+    if nome is None:
+        nome = ctx.author.name
+
+    response = requests.put(url=f'{path}/devolver?nome_item={item[0]}&user={nome}&email={item[1]}')
     if 'Erro' not in response.json():
-        await ctx.send(f'{item} Devolvido! Não esqueça de entrega-lo!')
+        await ctx.send(f'{item[0]} Devolvido! Não esqueça de entrega-lo!')
     else:
         await ctx.send(f'Algo deu errado... não consegui devolver :(')
 
