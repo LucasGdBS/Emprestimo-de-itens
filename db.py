@@ -13,7 +13,8 @@ class DB:
                              item text primary key,
                              qnt_total integer,
                              qnt_estoque integer,
-                             qnt_emprestados integer
+                             qnt_emprestados integer,
+                             qnt_quebrados integer
                              )
                              ''')
         except Exception as erro:
@@ -25,7 +26,7 @@ class DB:
     def insert_item(self, item:tuple):
         try:
             self.cur.execute(
-                '''insert into Estoque values (?, ?, ?, ?)''', item
+                '''insert into Estoque values (?, ?, ?, ?, ?)''', item
                 )
         except Exception as erro:
             self.con.rollback()
@@ -38,7 +39,7 @@ class DB:
     def insert_items(self, items):
         try:
             self.cur.executemany(
-                '''insert into Estoque values (?, ?, ?, ?)''', items
+                '''insert into Estoque values (?, ?, ?, ?, ?)''', items
             )
         except Exception as erro:
             self.con.rollback()
@@ -62,7 +63,7 @@ class DB:
                 where item=?''', (name,)
             )
             item = self.consulting_item_by_name(name)
-            if item[1] < abs(item[2]) + abs(item[3]):
+            if item[1] < abs(item[2]) + abs(item[3]) + abs(item[4]):
                 self.con.rollback()
                 return {'Erro': 'No find itens'}
         except Exception as erro:
@@ -81,7 +82,7 @@ class DB:
                 where item=?''', (name,)
             )
             item = self.consulting_item_by_name(name)
-            if item[1] < abs(item[2]) + abs(item[3]):
+            if item[1] < abs(item[2]) + abs(item[3]) + abs(item[4]):
                 self.con.rollback()
                 return {'Erro': 'No find itens'}
         except Exception as erro:
@@ -108,3 +109,22 @@ class DB:
         return self.cur.execute(
             '''select * from Estoque'''
         ).fetchall()
+    
+    def item_broken(self, name):
+        try:
+            self.cur.execute(
+                '''update Estoque set
+                qnt_estoque = qnt_estoque - 1,
+                qnt_quebrados = qnt_quebrados + 1
+                where item=?''', (name, )
+            )
+            item = self.consulting_item_by_name(name)
+            if item[1] < abs(item[2]) + abs(item[3]) + abs(item[4]):
+                self.con.rollback()
+                return {'Erro': 'No find itens'}
+        except Exception as erro:
+            self.con.rollback()
+            return {'Erro': erro}
+        else:
+            self.con.commit()
+            return {'Sucesso': 'OK'}

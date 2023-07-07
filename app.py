@@ -32,7 +32,7 @@ def get_items():
     except:
          return {'Erro':'nenhum item encontrado'}
     else:
-        return [{'item':row[0],'qnt_total':row[1],'qnt_estoque':row[2],'qnt_emprestados':row[3]} for row in items]
+        return [{'item':row[0],'qnt_total':row[1],'qnt_estoque':row[2],'qnt_emprestados':row[3], 'qnt_quebrados':row[4]} for row in items]
     
 @app.get('/estoque/get-item/{nome_item}')
 def get_item(nome_item: str):
@@ -45,7 +45,8 @@ def get_item(nome_item: str):
             'Item':item[0], 
             'qnt_total':item[1], 
             'qnt_estoque':item[2], 
-            'qnt_emprestados':item[3]
+            'qnt_emprestados':item[3],
+            'qnt_quebrados':item[4]
             }
         return dic
     except:
