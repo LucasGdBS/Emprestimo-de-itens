@@ -45,7 +45,7 @@ async def emprestar(ctx, *item):
 
     response = requests.put(url=f'{path}/emprestar?nome_item={item[0]}&user={nome}&email={item[1]}')
     if 'Erro' not in response.json():
-        await ctx.send(f'{item[0]} emprestado! Não esqueça de pega-lo!')
+        await ctx.send(f'{item[0]} emprestado para {nome}! Não esqueça de pega-lo!')
     else:
         await ctx.send(f'Não temos {item} no estoque para emprestar :(')
 
@@ -65,7 +65,7 @@ async def devolver(ctx, *item):
 
     response = requests.put(url=f'{path}/devolver?nome_item={item[0]}&user={nome}&email={item[1]}')
     if 'Erro' not in response.json():
-        await ctx.send(f'{item[0]} Devolvido! Não esqueça de entrega-lo!')
+        await ctx.send(f'{item[0]} Devolvido por {nome}! Não esqueça de entrega-lo!')
     else:
         await ctx.send(f'Algo deu errado... não consegui devolver :(')
 
