@@ -1,9 +1,9 @@
-from os import linesep
-import json
 import discord
 import requests
+from os import linesep
+from decouple import config
 from discord.ext import commands
-from key import key
+
 
 path = 'http://127.0.0.1:8000/estoque'
 
@@ -69,4 +69,5 @@ async def devolver(ctx, *item):
     else:
         await ctx.send(f'Algo deu errado... não consegui devolver :(')
 
-bot.run(key)
+
+bot.run(config('TOKEN'))
