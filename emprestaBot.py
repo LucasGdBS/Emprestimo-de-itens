@@ -47,7 +47,7 @@ async def emprestar(ctx, *item):
     if 'Erro' not in response.json():
         await ctx.send(f'{item[0]} emprestado para {nome}! Não esqueça de pega-lo!')
     else:
-        await ctx.send(f'Não temos {item} no estoque para emprestar :(')
+        await ctx.send(f'Não temos {item[0]} no estoque para emprestar :(')
 
 @bot.command()
 async def devolver(ctx, *item):

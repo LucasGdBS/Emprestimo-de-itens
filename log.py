@@ -1,8 +1,8 @@
 from datetime import datetime
 
 class Log:
-    def __init__(self):
-        self.file_name = 'log.txt'
+    def __init__(self, log_name):
+        self.file_name = log_name
         if not self.file_exists():
             self.create_file()
         
@@ -31,8 +31,13 @@ class Log:
             row = f'[{data}] {nome} com email {email} emprestou um {item}\n'
         else:
             row = f'[{data}] {nome} com email {email} devolveu um {item}\n'
-        with open(self.file_name, 'a') as file:
-            file.write(row)
+        try:
+            with open(self.file_name, 'a') as file:
+                file.write(row)
+        except Exception as erro:
+            return {'Erro':erro}
+        else:
+            return {'Sucesso':'OK'}
+        
 
-log = Log()
-
+log = Log('log.txt')

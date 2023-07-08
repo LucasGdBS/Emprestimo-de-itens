@@ -1,6 +1,7 @@
 '''Api que da acesso ao banco de dados onde se encontrarm os itens para
 emprestimo'''
 from db import DB
+from log import log
 from fastapi import FastAPI
 
 '''
@@ -76,6 +77,7 @@ def emprestar_item(nome_item:str, user:str, email:str):
     estoque.con.close()
     
     if 'Erro' not in emprestimo :
+        log.write_row(user, email, nome_item, True)
         return get_item(nome_item)
     else:
         return emprestimo
@@ -91,6 +93,7 @@ def devolver_item(nome_item:str, user:str, email:str):
     estoque.con.close()
 
     if 'Erro' not in devolucao:
+        log.write_row(user, email, nome_item, False)
         return get_item(nome_item)
     else:
         return devolucao
