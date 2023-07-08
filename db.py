@@ -119,11 +119,12 @@ class DB:
                 self.con.rollback()
                 return {'Erro': 'No find itens'}
             
-            if self.consulting_user(nome, email, item):
+            id = self.consulting_user(nome, email, item)[0]
+            if id:
                 self.cur.execute(
                     '''update User set
                     situacao = 0
-                    where nome = ? and email = ? and item=?''', (nome, email, item)
+                    where id = ? and nome = ? and email = ? and item=?''', (id, nome, email, item)
                 )
             else:
                 self.con.rollback()
