@@ -190,3 +190,14 @@ class DB:
         else:
             self.con.commit()
             return {'Sucesso': 'OK'}
+    
+    def get_items_by_user(self, user, email):
+        try:
+            items = self.cur.execute(
+                '''select item from User
+                where nome=? and email=? and situacao=?''', (user, email, True)
+            ).fetchall()
+        except Exception as erro:
+            return {'Erro': erro}
+        else:
+            return items
