@@ -110,3 +110,16 @@ def modify_item(nome_item:str, qnt_total:int, qnt_estoque:int, qnt_emprestados:i
         return get_item(nome_item)
     else: 
         return modify
+
+@app.get('/estoque/get_user')
+def get_items_by_user(user:str, email:str):
+    '''Visualiza todos os itens que estão emprestados para o usuario informado'''
+
+    estoque.connect()
+    items = estoque.get_items_by_user(user, email)
+    estoque.con.close()
+
+    if items:
+        return items
+    else:
+        return 'Nenhum item'
