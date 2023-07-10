@@ -1,5 +1,5 @@
 from discord.ext import commands
-from discord.ext.commands.errors import MissingRequiredArgument, CommandNotFound
+from discord.ext.commands.errors import CommandNotFound
 
 class Manage(commands.Cog):
     """ Manage the bot """
@@ -12,11 +12,10 @@ class Manage(commands.Cog):
         print(f'Conectado como {self.bot.user.name}')
     
     @commands.Cog.listener()
-    async def on_command_error(ctx, error):
-        if isinstance(error, MissingRequiredArgument):
-            await ctx.send('Favor enviar todos os argumentos')
-        elif isinstance(error, CommandNotFound):
-            await ctx.send('O camando digitado não existe. !help para mais informações')
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, CommandNotFound):
+            await ctx.message.reply('O comando digitado não existe. !help para mais informações', delete_after=20.0)
+            await ctx.message.delete()
         else:
             raise error
 
