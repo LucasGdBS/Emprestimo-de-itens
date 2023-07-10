@@ -39,8 +39,6 @@ class Loan(commands.Cog):
 
             embed.add_field(name='⚠️Atenção⚠️', value='Não esqueça de pega-lo!', inline=False)
             
-            # await ctx.send(f'{item} emprestado para {nome}! Não esqueça de pega-lo!')
-            await ctx.author.send(embed=embed)
         else:
             embed = discord.Embed(title=f'Emprestimo para {nome}!',
                                   description=f'Não foi possivel realizar o emprestimo de {item} para {nome} 😢',
@@ -51,10 +49,9 @@ class Loan(commands.Cog):
             embed.add_field(name='E-mail', value=email, inline=True)
             
             embed.add_field(name='Sinto muito 😢', value=f'Não temos {item} no estoque para emprestar no momento', inline=False)
-            await ctx.author.send(embed=embed)
         
+        await ctx.author.send(embed=embed)
         await ctx.message.delete()
-
 
     @commands.command(name='devolver')
     async def devolver(self, ctx, *nome_item):
@@ -85,7 +82,6 @@ class Loan(commands.Cog):
 
             embed.add_field(name='⚠️Atenção⚠️', value='Não esqueça de entrega-lo!', inline=False)
 
-            await ctx.author.send(embed=embed)
         else:
             embed = discord.Embed(title=f'Devolução de {nome}!',
                                   description=f'{nome}, não foi possivel realizar a devolução de {item}',
@@ -97,8 +93,8 @@ class Loan(commands.Cog):
             
             embed.add_field(name='Algo de errado aconteceu...🧐', value=f'Não foi possivel realizar a devolução.{linesep}\
                             Tenta novamente em alguns instantes ou fala com o resposavel pelo lab.{linesep}', inline=False)
-            await ctx.author.send(embed=embed)
         
+        await ctx.author.send(embed=embed)
         await ctx.message.delete()
             
 

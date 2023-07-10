@@ -1,3 +1,4 @@
+import discord
 import requests
 from os import linesep
 from discord.ext import commands
@@ -18,13 +19,27 @@ class Stock(commands.Cog):
         item = ' '.join(nome_item)
 
         response = requests.get(url=f'{self.api}/get-item?nome_item={item}').json()
-        string = f'{item} no GARAGino'
 
+        if 'Erro' not in response:
+            embed = discord.Embed(title=f'Consulta de {item}',
+                                    color=discord.Color.orange())
+            
+            embed.add_field(name='Item', value=response.get('Item'), inline=True)
+            embed.add_field(name='Quantidade total', value=response.get('qnt_total'), inline=True)
+            embed.add_field(name='Quantidade em Estoque', value=response.get('qnt_estoque'), inline=True)
+            embed.add_field(name='Quantidade de emprestados', value=response.get('qnt_emprestados'), inline=True)
 
-        for k,v in response.items():
-            if not k == 'qnt_quebrados':
-                string += f'{linesep}{k}: {v}'
-        await ctx.send(string)
+            embed.add_field(name='Dica💡', value='Para emprestar um item use !emprestar <nome item> <seu e-mail>', inline=False)
+
+        else:
+            embed = discord.Embed(title=f'Consulta de {item}',
+                                  description=f'Não foi possivel localizar {item} nos meus registros...',
+                                    color=discord.Color.orange())
+            
+            embed.add_field(name='Dica💡', value='Para saber todos os itens que temos disponiveis para emprestimo use !catalogo')
+        
+        await ctx.author.send(embed=embed)
+        await ctx.message.delete()
     
     @commands.command(name='catalogo')
     async def get_items(self, ctx):
