@@ -10,6 +10,17 @@ class Loan(commands.Cog):
         self.bot = bot
         self.api = 'http://127.0.0.1:8000/estoque'
     
+    def get_user_name(self, ctx:commands.Context):
+        try:
+            nome = ctx.author.nick
+        except:
+            nome = ctx.author.name
+        else:
+            if nome is None:
+                nome = ctx.author.name
+        
+        return nome
+    
     @commands.command(name='emprestar')
     async def emprestar(self, ctx, *entrada):
         '''
@@ -19,13 +30,7 @@ class Loan(commands.Cog):
         item = ' '.join(entrada[:-1])
         email = entrada[-1]
 
-        try:
-            nome = ctx.author.nick
-        except:
-            nome = ctx.author.name
-        else:
-            if nome is None:
-                nome = ctx.author.name
+        nome = self.get_user_name(ctx)
 
         response = requests.put(url=f'{self.api}/emprestar?nome_item={item}&user={nome}&email={email}')
         if 'Erro' not in response.json():
@@ -62,13 +67,7 @@ class Loan(commands.Cog):
         item = ' '.join(nome_item[:-1])
         email = nome_item[-1]
 
-        try:
-            nome = ctx.author.nick
-        except:
-            nome = ctx.author.name
-        else:
-            if nome is None:
-                nome = ctx.author.name
+        nome = self.get_user_name(ctx)
 
         response = requests.put(url=f'{self.api}/devolver?nome_item={item}&user={nome}&email={email}')
         if 'Erro' not in response.json():
@@ -96,6 +95,28 @@ class Loan(commands.Cog):
         
         await ctx.author.send(embed=embed)
         await ctx.message.delete()
+    
+    @commands.command(name='emprestimos')
+    async def emprestimos(self, ctx:commands.Context, email):
+
+        nome = self.get_user_name(ctx)
+
+        response = requests.get(url=f'{self.api}/get_user?user={nome}&email={email}').json()
+
+        embed = discord.Embed(title=f'Itens emprestados por {nome}',
+                              description=f'Esses são os itens que você pegou emprestado e ainda não devolveu',
+                              color=discord.Color.orange())
+        
+        if 'Nenhum item' not in response:
+            for item in response:
+                embed.add_field(name=item[0], value='', inline=False)
+        else:
+            embed.add_field(name='Tá tudo certo!', value='Não encontrei nenhum item emprestado em seu nome', inline=False)
+            embed.add_field(name='Dica💡', value='Para pegar um item emprestado use !emprestar <nome do item> <seu email>', inline=False)
+        
+        await ctx.author.send(embed=embed)
+        await ctx.message.delete()
+
             
 
 async def setup(bot):
