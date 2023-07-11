@@ -98,6 +98,9 @@ class Loan(commands.Cog):
     
     @commands.command(name='emprestimos')
     async def emprestimos(self, ctx:commands.Context, email):
+        '''
+        Função que mostra todos os itens em posse do usuario - !emprestimos <e-mail>
+        '''
 
         nome = self.get_user_name(ctx)
 
