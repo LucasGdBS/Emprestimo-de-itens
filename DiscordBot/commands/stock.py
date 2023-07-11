@@ -2,6 +2,7 @@ import discord
 import requests
 from os import linesep
 from discord.ext import commands
+from dispie import Paginator
 
 class Stock(commands.Cog):
     """ Return stock's informations"""
@@ -42,21 +43,27 @@ class Stock(commands.Cog):
         await ctx.message.delete()
     
     @commands.command(name='catalogo')
-    async def get_items(self, ctx):
-        '''
-        Exibe todos os itens no catalogo- !catalogo <item>
-        '''
+    async def get_list(self, ctx):
+        """
+        Exibe um catálogo com todos os itens disponiveis - !catalogo
+        """
 
         response = requests.get(url=f'{self.api}').json()
-        string = f'Catalogo do GARAGino{linesep}'
 
-        for n,item in enumerate(response):
-            item = item.get('item')
-            string += f'{item} '
-            if n % 4 == 0 and n != 0:
-                string += linesep
+        itens = [str(item.get('item')) for item in response]
+
+        paginas = int(len(itens)/6) + (len(itens)/6 > int(len(itens)/6))
+
+        embeds = list()
+        for n,lines in enumerate(discord.utils.as_chunks(itens, 6)):
+            embed = discord.Embed(title='Itens disponiveis para emprestimo', description=f'Página {n+1} de {paginas}', color=discord.Color.orange())
+            for line in lines:
+                embed.add_field(name=line, value='', inline=True)
+
+            embeds.append(embed)
         
-        await ctx.send(string)
+        pages = Paginator(embeds)
+        await pages.start(ctx)
 
 
 async def setup(bot):
